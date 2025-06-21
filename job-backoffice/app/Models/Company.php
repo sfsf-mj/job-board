@@ -40,6 +40,11 @@ class Company extends Model
 
     public function jobVacancies()
     {
-        return $this->hasMany(JobVacancy::class, 'category_id', 'id');
+        return $this->hasMany(JobVacancy::class, 'company_id', 'id');
+    }
+
+    public function jobApplications()
+    {
+        return $this->hasManyThrough(JobApplication::class, JobVacancy::class,'company_id','job_vacancy_id','id','id');
     }
 }

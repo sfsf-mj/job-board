@@ -38,12 +38,12 @@ class JobVacancy extends Model
         ];
     }
 
-    public function jobCategory()
+    public function company()
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
-    public function category()
+    public function jobCategory()
     {
         return $this->belongsTo(JobCategory::class, 'job_category_id', 'id');
     }

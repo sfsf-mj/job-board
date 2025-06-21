@@ -17,11 +17,11 @@
             {{ __('Companies') }}
         </x-nav-link>
 
-        <x-nav-link :href="route('application.index')" :active="request()->routeIs('application.*')">
+        <x-nav-link :href="route('job-application.index')" :active="request()->routeIs('job-application.*')">
             {{ __('Applications') }}
         </x-nav-link>
 
-        <x-nav-link :href="route('category.index')" :active="request()->routeIs('category.*')">
+        <x-nav-link :href="route('job-category.index')" :active="request()->routeIs('job-category.*')">
             {{ __('Categories') }}
         </x-nav-link>
 
