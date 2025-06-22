@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CompanyCreateRequest;
 use App\Http\Requests\CompanyUpdateRequest;
 use App\Models\Company;
-use App\Models\JobApplication;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -43,7 +42,7 @@ class CompanyController extends Controller
     {
         $industries = $this->industries;
         
-        return view("company.create", compact("industries", "roles"));
+        return view("company.create", compact("industries"));
     }
 
     /**
