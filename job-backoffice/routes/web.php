@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
 
     // User
     Route::resource('user', UserController::class);
+    Route::put('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
