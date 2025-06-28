@@ -9,32 +9,39 @@ use App\Http\Controllers\JobVacancyController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth')->group(function () {
+// Shared routes
+Route::middleware(['auth', 'role:admin,company-owner'])->group(function () {
     Route::get('/', [DashboardController::class,'index'])->name('dashboard');
-
-    // Companies
-    Route::resource('company', CompanyController::class);
-    Route::put('/company/{id}/restore', [CompanyController::class, 'restore'])->name('company.restore');
 
     // Job Application
     Route::resource('job-application', JobApplicationController::class);
     Route::put('/job-application/{id}/restore', [JobApplicationController::class, 'restore'])->name('job-application.restore');
 
-    // Job Category
-    Route::resource('job-category', JobCategoryController::class);
-    Route::put('/job-category/{id}/restore', [JobCategoryController::class, 'restore'])->name('job-category.restore');
-
     // Job Vacancy
     Route::resource('job-vacancy', JobVacancyController::class);
     Route::put('/job-vacancy/{id}/restore', [JobVacancyController::class, 'restore'])->name('job-vacancy.restore'); 
+});
+
+// Copmany routes
+Route::middleware(['auth', 'role:company-owner'])->group(function () {
+    Route::get('/my-company', [CompanyController::class, 'show'])->name('my-company.show');
+    Route::get('/my-company/edit', [CompanyController::class, 'edit'])->name('my-company.edit');
+    Route::put('/my-company', [CompanyController::class, 'update'])->name('my-company.update');
+});
+
+// Admin routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    // Job Category
+    Route::resource('job-category', JobCategoryController::class);
+    Route::put('/job-category/{id}/restore', [JobCategoryController::class, 'restore'])->name('job-category.restore');
 
     // User
     Route::resource('user', UserController::class);
     Route::put('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
 
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // Companies
+    Route::resource('company', CompanyController::class);
+    Route::put('/company/{id}/restore', [CompanyController::class, 'restore'])->name('company.restore');
 });
 
 require __DIR__.'/auth.php';

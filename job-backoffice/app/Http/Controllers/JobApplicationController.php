@@ -18,15 +18,24 @@ class JobApplicationController extends Controller
         // Active
         $query = JobApplication::latest();
 
-        $searchValue = $request->input("search");
+        $searchValue = $request->input("search") ?? "";
+        
+        if (!empty($searchValue)) {
+            $query->where('status', 'like', '%' . $searchValue . '%')
+                ->orWhere('created_at', 'like', '%' . $searchValue . '%')
+                ->orWhere('job_vacancy_id', 'like', '%' . $searchValue . '%')
+                ->get();
+        }
+
+        if (auth()->guard()->user()->role == "company-owner") {
+            $query->whereHas("jobVacancy", function ($query) {
+                $query->where("company_id", auth()->guard()->user()->company->id);
+            });
+        }
 
         // Archived archived
         if ($request->input("archived") == "true") {
             $query->onlyTrashed();
-        }
-
-        if (!empty($searchValue)) {
-            $query->where('status', 'like', '%' . $searchValue . '%');
         }
 
         $jobApplications = $query->paginate(10)->onEachSide(1);

@@ -40,7 +40,9 @@
                 <tr>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">ِApplicant Name</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Job Title</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Company</th>
+                    @if (auth()->guard()->user()->role == "admin")
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Company</th>
+                    @endif
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Actions</th>
                 </tr>
@@ -60,8 +62,13 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-gray-800">{{ $application->jobVacancy?->title ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 text-gray-800">{{ $application->jobVacancy?->company->name ?? 'N/A' }}</td>
-                        <td class="px-6 py-4 text-gray-800"><x-job-application-status application="{{ $application->status }}" /></td>
+
+                        @if (auth()->guard()->user()->role == "admin")
+                            <td class="px-6 py-4 text-gray-800">{{ $application->jobVacancy?->company->name ?? 'N/A' }}</td>
+                        @endif
+                        
+                        <td class="px-6 py-4 text-gray-800"><x-job-application-status
+                                application="{{ $application->status }}" /></td>
                         <td>
                             <div class="flex space-x-4">
                                 @if(request()->has('archived') && request()->input('archived') == 'true')

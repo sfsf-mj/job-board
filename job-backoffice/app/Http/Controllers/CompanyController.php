@@ -88,18 +88,26 @@ class CompanyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id = null)
     {
-        $company = Company::findOrFail($id);        
+        if ($id) {
+            $company = Company::findOrFail($id);
+        }else {
+            $company = Company::where("owner_id", auth()->guard()->user()->id)->first();
+        }       
         return view("company.show", compact("company"));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(string $id = null)
     {
-        $company = Company::findOrFail($id);
+        if ($id) {
+            $company = Company::findOrFail($id);
+        }else {
+            $company = Company::where("owner_id", auth()->guard()->user()->id)->first();
+        }
 
         $industries = $this->industries;
 
@@ -109,10 +117,16 @@ class CompanyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(CompanyUpdateRequest $request, string $id)
+    public function update(CompanyUpdateRequest $request, string $id = null)
     {
         $validated = $request->validated();
-        $company = Company::findOrFail($id);
+
+        if ($id) {
+            $company = Company::findOrFail($id);
+        }else {
+            $company = Company::where("owner_id", auth()->guard()->user()->id)->first();
+        }
+        
         $company->update([
             "name"=> $validated["name"],
             "address"=> $validated["address"],
@@ -129,6 +143,14 @@ class CompanyController extends Controller
         }
 
         $company->owner()->update($ownerData);
+
+        if(auth()->guard()->user()->role == 'company-owner'){
+            return redirect()->route("my-company.show")->with('notification', [
+                'title' => 'Success!',
+                'type' => 'success',
+                'message' => 'Company updated successfully.',
+            ]);
+        }
 
         if($request->query('redirectToList')){ 
             return redirect()->route("company.index")->with('notification', [

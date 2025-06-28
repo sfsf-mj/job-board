@@ -1,3 +1,11 @@
+@php
+    if (auth()->user()->role == 'admin') {
+        $formAction = route('company.update', ['company' => $company->id, 'redirectToList' => request('redirectToList')]);
+    } else if (auth()->user()->role == 'company-owner') {
+        $formAction = route('my-company.update');
+    }
+@endphp
+
 <x-app-layout>
 
     <x-slot name="header">
@@ -12,7 +20,7 @@
             <x-error-alert />
 
             <!-- Create form -->
-            <form action="{{ route('company.update', ['company' => $company->id, 'redirectToList' => request('redirectToList')]) }}" class="w-full max-w-lg') }}" method="POST">
+            <form action="{{ $formAction }}" class="w-full max-w-lg') }}" method="POST">
                 @csrf
                 @method('PUT')
 
@@ -41,7 +49,7 @@
                         <label for="industry" class="block text-sm font-medium text-gray-700">Industry</label>
                         <select name="industry" id="industry" value="{{ old('industry', $company->industry) }}"
                             class="{{ $errors->has('industry') ? 'border-red-500' : 'border-gray-300' }} mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-                            <option value="" class="text-gray-100">Select Industry</option>
+                            <!-- <option value="" class="text-gray-100">Select Industry</option> -->
                             @foreach ($industries as $industry)
                                 <option value="{{ $industry }}">{{ $industry }}</option>
                             @endforeach
@@ -62,12 +70,13 @@
 
                 <!-- Company Owner -->
                 <div class="mb-4 p-6 bg-gray-50 border border-gray-100 rounded-lg shadow-sm">
-                    <h3 class="text-lg font-bold text-gray-800">Company Details</h3>
+                    <h3 class="text-lg font-bold text-gray-800">Company Owner</h3>
                     <p class="text-sm mb-4 text-gray-600">Enter the company owner details.</p>
 
                     <div class="mb-4">
                         <label for="name" class="block text-sm font-medium text-gray-700">Owner Name</label>
-                        <input type="text" name="owner_name" id="name" value="{{ old('owner_name', $company->owner->name) }}"
+                        <input type="text" name="owner_name" id="name"
+                            value="{{ old('owner_name', $company->owner->name) }}"
                             class="{{ $errors->has('name') ? 'border-red-500' : 'border-gray-300' }} mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                         @error('owner_name')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -76,8 +85,10 @@
 
                     <!-- Owner Email (read only cannot be updated) -->
                     <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-700">Owner Email (Read Only)</label>
-                        <input type="email" name="owner_email" id="email" value="{{ old('owner_email', $company->owner->email) }}" readonly
+                        <label for="email" class="block text-sm font-medium text-gray-700">Owner Email (Read
+                            Only)</label>
+                        <input type="email" name="owner_email" id="email"
+                            value="{{ old('owner_email', $company->owner->email) }}" readonly
                             class="{{ $errors->has('owner_email') ? 'border-red-500' : 'border-gray-300' }} mt-1 block w-full rounded-md shadow-sm sm:text-sm bg-gray-100">
                         @error('owner_email')
                             <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -86,9 +97,11 @@
 
                     <!-- Owner Password (Can update the password) -->
                     <div class="mb-4">
-                        <label for="password" class="block text-sm font-medium text-gray-700">Change Owner Password (Leave blank to keep the same password)</label>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Change Owner Password
+                            (Leave blank to keep the same password)</label>
                         <div class="relative" x-data="{ showPassword: false }">
-                            <input type="password" name="owner_password" id="password" value="{{ old('owner_password') }}"
+                            <input type="password" name="owner_password" id="password"
+                                value="{{ old('owner_password') }}"
                                 class="{{ $errors->has('owner_password') ? 'border-red-500' : 'border-gray-300' }} mt-1 block w-full rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                                 :type="showPassword ? 'text' : 'password'">
 
@@ -125,10 +138,20 @@
 
                 <!-- Action buttons -->
                 <div class="flex justify-end space-x-4">
-                    <a href="{{ route('company.index') }}"
-                        class="px-4 py-2 rounded-md text-gray-500 hover:text-gray-700">
-                        Cancel
-                    </a>
+                    @if(auth()->user()->role == 'company-owner')
+                        <a href="{{ route('my-company.show') }}"
+                            class="px-4 py-2 rounded-md text-gray-500 hover:text-gray-700">
+                            Cancel
+                        </a>
+                    @endif
+
+                    @if(auth()->user()->role == 'admin')
+                        <a href="{{ route('company.index') }}"
+                            class="px-4 py-2 rounded-md text-gray-500 hover:text-gray-700">
+                            Cancel
+                        </a>
+                    @endif
+
                     <button type="submit"
                         class="inline-flex items-center px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus: outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         Update

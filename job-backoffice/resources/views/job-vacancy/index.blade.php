@@ -42,7 +42,11 @@
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Type</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Required Skills</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">View Count</th>
-                    <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Company</th>
+
+                    @if (auth()->guard()->user()->role == "admin")
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Company</th>
+                    @endif
+
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Job Category</th>
                     <th class="px-6 py-3 text-left text-sm font-semibold text-gray-600">Actions</th>
                 </tr>
@@ -61,12 +65,17 @@
 
                             @endif
                         </td>
+                        
                         <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->location }}</td>
                         <td class="px-6 py-4 text-gray-800"> ${{ number_format($jobVacancy->salary, 2) }}</td>
                         <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->type }}</td>
                         <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->required_skills }}</td>
                         <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->view_count }}</td>
-                        <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->company->name }}</td>
+
+                        @if (auth()->guard()->user()->role == "admin")
+                            <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->company->name }}</td>
+                        @endif
+
                         <td class="px-6 py-4 text-gray-800">{{ $jobVacancy->jobCategory->name }}</td>
                         <td>
                             <div class="flex space-x-4">
