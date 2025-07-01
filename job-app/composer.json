@@ -16,9 +16,11 @@
     ],
     "require": {
         "php": "^8.2",
+        "job/shared": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "job/shared": "*"
+        "openai-php/laravel": "^0.14.0",
+        "spatie/pdf-to-text": "^1.54"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
